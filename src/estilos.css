@@ -1,0 +1,134 @@
+:root {
+  --cafe: #2a1408;
+  --cafe2: #4a250e;
+  --cafe3: #6b3815;
+  --naranja: #e0731a;
+  --amarillo: #ffd23f;
+  --crema: #fff4dc;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--crema);
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; background: #140903; overflow: hidden; }
+body { -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.titulo { font-weight: 900; color: var(--amarillo); text-shadow: 0 4px 0 #2a1206, 0 0 2px #2a1206; letter-spacing: .5px; }
+
+/* ---------- caja 16:9 de la pantalla ---------- */
+.escenario {
+  position: absolute; inset: 0; margin: auto;
+  width: min(100vw, 177.78vh); height: min(56.25vw, 100vh);
+  overflow: hidden; background: var(--cafe);
+  container-type: size;
+}
+.escenario canvas { width: 100%; height: 100%; display: block; }
+.capa { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fondo-menu {
+  background: linear-gradient(180deg, rgba(20,9,3,.55), rgba(20,9,3,.92)), url(/assets/pistas/Salento/Tramo_05.webp) center 30% / cover;
+}
+.u { font-size: 1.5cqh; } /* unidad relativa al alto del escenario */
+
+.tarjeta {
+  background: rgba(74,37,14,.88); border-radius: 2.2cqh; border: .5cqh solid transparent;
+  transition: transform .08s, border-color .08s, background .08s;
+}
+.tarjeta.foco { border-color: var(--amarillo); background: rgba(224,115,26,.95); transform: scale(1.04); }
+.boton {
+  background: var(--cafe3); border: .45cqh solid transparent; border-radius: 1.6cqh;
+  padding: 1.4cqh 3cqh; font-size: 3.2cqh; font-weight: 800;
+}
+.boton.foco, .boton:hover { background: var(--naranja); border-color: var(--amarillo); }
+.ayuda { font-size: 2.1cqh; opacity: .9; text-align: center; line-height: 1.5; text-shadow: 0 2px 0 #000; }
+
+/* ---------- inicio ---------- */
+.modos { display: flex; gap: 4cqh; margin-top: 5cqh; }
+.modo { width: 52cqh; padding: 3.5cqh; text-align: center; }
+.modo h2 { margin: 1cqh 0; font-size: 4.2cqh; }
+.modo p { font-size: 2.4cqh; margin: 0; opacity: .9; line-height: 1.4; }
+.modo .icono { font-size: 10cqh; line-height: 1; }
+
+/* ---------- lobby ---------- */
+.ranuras { display: flex; gap: 2.4cqh; margin-top: 3cqh; }
+.ranura { width: 36cqh; height: 52cqh; padding: 2cqh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; }
+.ranura.vacia { opacity: .55; justify-content: center; border: .4cqh dashed rgba(255,244,220,.4); background: rgba(40,18,6,.6); }
+.ranura .num { font-size: 4.4cqh; font-weight: 900; }
+.ranura img.veh { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 70%; }
+.ranura .flechas { display: flex; gap: 1cqh; width: 100%; justify-content: space-between; font-size: 3cqh; }
+.ranura .listo { position: absolute; top: 1.4cqh; right: 1.6cqh; background: #3bb44a; color: #fff; font-weight: 900; padding: .4cqh 1.2cqh; border-radius: 1cqh; font-size: 2.2cqh; }
+.ranura .estado { font-size: 2.2cqh; text-align: center; min-height: 3cqh; }
+
+.sala { display: flex; gap: 5cqh; align-items: center; margin-top: 2cqh; }
+.qr { background: #fff; padding: 1.4cqh; border-radius: 2cqh; width: 38cqh; height: 38cqh; }
+.qr img { width: 100%; height: 100%; image-rendering: pixelated; }
+.codigo { font-size: 11cqh; font-weight: 900; letter-spacing: 1.4cqh; color: var(--amarillo); text-shadow: 0 .6cqh 0 #2a1206; }
+.url { font-size: 2.4cqh; background: rgba(0,0,0,.35); padding: .8cqh 1.6cqh; border-radius: 1cqh; word-break: break-all; }
+
+/* ---------- pistas ---------- */
+.pistas { display: flex; gap: 3cqh; margin-top: 4cqh; }
+.pista { width: 50cqh; padding: 1.4cqh; text-align: center; }
+.pista img { width: 100%; aspect-ratio: 768/620; object-fit: cover; object-position: 50% 62%; border-radius: 1.4cqh; display: block; }
+.pista span { display: block; font-size: 4cqh; font-weight: 900; margin: 1.4cqh 0 .6cqh; }
+
+/* ---------- carga, pausa, resultados ---------- */
+.barra-carga { width: 60cqh; height: 2.4cqh; background: rgba(0,0,0,.5); border-radius: 2cqh; overflow: hidden; margin-top: 3cqh; border: .3cqh solid var(--amarillo); }
+.barra-carga div { height: 100%; background: var(--naranja); transition: width .1s; }
+.velo { background: rgba(15,7,2,.72); }
+.menu-v { display: flex; flex-direction: column; gap: 2cqh; margin-top: 3cqh; min-width: 48cqh; }
+.filas { display: flex; flex-direction: column; gap: 1.1cqh; margin-top: 2cqh; width: 94cqh; }
+.fila { display: flex; align-items: center; background: rgba(74,37,14,.88); border-radius: 1.4cqh; height: 8.6cqh; padding: 0 2.4cqh; font-size: 4.4cqh; font-weight: 900; gap: 2cqh; }
+.fila img { height: 9.6cqh; width: 10cqh; object-fit: cover; object-position: 50% 70%; }
+.fila .t { margin-left: auto; }
+.fila .j { font-size: 3cqh; }
+.botonera { display: flex; gap: 3cqh; margin-top: 3cqh; }
+.esquina { position: absolute; top: 2cqh; right: 2cqh; }
+.esquina .boton { font-size: 2.2cqh; padding: 1cqh 2cqh; }
+
+/* ================= CONTROL DEL CELULAR ================= */
+body.modo-control { background: #1b0c04; touch-action: none; overscroll-behavior: none; }
+.ctl { position: fixed; inset: 0; display: flex; flex-direction: column; padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+.ctl-centro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 10px; }
+.ctl h1 { margin: 0; font-size: 26px; }
+.ctl input { font-size: 34px; text-align: center; letter-spacing: 10px; width: 220px; padding: 10px; border-radius: 14px; border: 3px solid var(--amarillo); background: #2a1408; color: var(--amarillo); font-weight: 900; text-transform: uppercase; }
+.ctl .boton { font-size: 22px; padding: 14px 26px; }
+.ctl .error { color: #ff8a80; font-weight: 700; }
+.ctl-cab { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; }
+.ctl-cab .chip { padding: 4px 12px; border-radius: 10px; color: #1b0c04; }
+.rejilla { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; max-width: 640px; }
+.rejilla button { background: var(--cafe2); border: 3px solid transparent; border-radius: 12px; padding: 4px; position: relative; }
+.rejilla button.sel { border-color: var(--amarillo); background: var(--naranja); }
+.rejilla button:disabled { opacity: .3; }
+.rejilla img { width: 100%; aspect-ratio: 1.05; object-fit: cover; object-position: 50% 72%; display: block; }
+.rejilla .ocupado { position: absolute; top: 2px; left: 4px; font-size: 13px; font-weight: 900; }
+.ctl-pistas { display: flex; gap: 10px; width: 100%; max-width: 640px; }
+.ctl-pistas button { flex: 1; background: var(--cafe2); border-radius: 12px; border: 3px solid transparent; padding: 6px; font-weight: 900; font-size: 16px; }
+.ctl-pistas img { width: 100%; aspect-ratio: 1.4; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 4px; }
+
+/* mando */
+.mando { flex: 1; display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; min-height: 0; }
+.mando .lado { display: grid; gap: 10px; min-height: 0; }
+.mando .izq { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
+.mando .der { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.mando .medio { display: flex; flex-direction: column; align-items: center; justify-content: space-between; width: 120px; padding: 4px 0; }
+.tecla {
+  border-radius: 22px; border: 4px solid rgba(255,244,220,.25); background: var(--cafe2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 18px; touch-action: none; min-height: 0;
+  box-shadow: 0 6px 0 #120802; transition: transform .04s, background .04s;
+}
+.tecla .ic { font-size: 40px; line-height: 1; }
+.tecla.on { background: var(--naranja); border-color: var(--amarillo); transform: translateY(4px); box-shadow: 0 2px 0 #120802; }
+.tecla.acel { background: #2f6b2a; }
+.tecla.acel.on { background: #4fbf45; }
+.tecla.fren { background: #7a2a1d; }
+.tecla.fren.on { background: #d4523a; }
+.mando .pos { font-size: 40px; font-weight: 900; color: var(--amarillo); line-height: 1; }
+.mando .item { width: 96px; height: 96px; border-radius: 18px; border: 4px solid var(--amarillo); background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
+.mando .item img { width: 86%; }
+.mando .turbo { width: 100%; height: 14px; border-radius: 8px; background: rgba(0,0,0,.5); overflow: hidden; border: 2px solid var(--amarillo); }
+.mando .turbo div { height: 100%; background: var(--naranja); }
+.mando .mini { font-size: 13px; background: var(--cafe3); border: none; border-radius: 10px; padding: 6px 10px; }
+.girar { display: none; }
+@media (orientation: portrait) {
+  .mando-envoltura .girar { display: flex; position: fixed; inset: 0; background: #1b0c04; z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 20px; font-weight: 800; text-align: center; padding: 30px; }
+  .mando-envoltura .girar .ic { font-size: 70px; }
+}
