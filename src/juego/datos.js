@@ -6,10 +6,11 @@ export const VEHICULOS = [
 export const PADRE_E_HIJA = 8
 
 export const PISTAS = [
-  { nombre: 'Salento', carpeta: 'Salento' },
-  { nombre: 'Santa Lucía', carpeta: 'Santa_Lucia' },
-  { nombre: 'Guaduales', carpeta: 'Guaduales' },
+  { nombre: 'Salento', carpeta: 'Salento', cielo: '#9fd3f0' },
+  { nombre: 'Santa Lucía', carpeta: 'Santa_Lucia', cielo: '#a9d8f2' },
+  { nombre: 'Guaduales', carpeta: 'Guaduales', cielo: '#b4dcef' },
 ]
+export const VUELTAS = 3
 
 // 0 costal de café, 1 melao de panela, 2 rollos de guadua
 export const ITEM_CARPETA = ['costal_de_cafe', 'melao_de_panela', 'rollos_de_guadua']
@@ -22,12 +23,12 @@ export const MAX_JUGADORES = 4
 export const COLOR_JUGADOR = ['#ffd23f', '#3fc1ff', '#ff5a5f', '#7ce35a']
 
 export const base = (p) => `/assets/${p}`
-export const rutaVehiculo = (i) => base(`vehiculos/${VEHICULOS[i]}/`)
-export const iconoVehiculo = (i) => rutaVehiculo(i) + 'marcha/01.webp'
+export const rutaKart = (i) => base(`karts/${VEHICULOS[i]}/`)
+export const iconoVehiculo = (i) => rutaKart(i) + 'icono.webp'
 export const imgTrampa = (item, enPista = true) =>
   base(`trampas/${ITEM_CARPETA[item]}/${enPista ? 'en_pista' : 'lanzamiento'}.webp`)
 export const imgCaja = (abierta) => base(`trampas/caja_flor_de_cafe/${abierta ? 'abierta' : 'cerrada'}.webp`)
-export const miniaturaPista = (i) => base(`pistas/${PISTAS[i].carpeta}/Tramo_03.webp`)
+export const miniaturaPista = (i) => base(`miniaturas/${PISTAS[i].carpeta}.webp`)
 
 export function formatoTiempo(t) {
   const m = Math.floor(t / 60)

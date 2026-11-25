@@ -7,7 +7,7 @@ import { conectar, urlParaCelulares } from '../red.js'
 import LobbyLocal from './LobbyLocal.jsx'
 import LobbyCelular from './LobbyCelular.jsx'
 import ElegirPista from './ElegirPista.jsx'
-import JuegoCanvas from './JuegoCanvas.jsx'
+import JuegoCanvas from './Juego3D.jsx'
 
 export default function Pantalla() {
   const [fase, setFase] = useState('inicio') // inicio | local | celular | pista | carrera

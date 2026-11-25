@@ -1,7 +1,7 @@
 // Entradas: teclado, controles (Gamepad API: Xbox, PlayStation, genéricos) y celulares.
 import { useEffect, useRef } from 'react'
 
-export const VACIO = { acelerar: false, frenar: false, saltar: false, turbo: false, lanzar: false, soltar: false, pausa: false }
+export const VACIO = { acelerar: false, frenar: false, izquierda: false, derecha: false, giro: 0, saltar: false, turbo: false, lanzar: false, soltar: false, pausa: false }
 
 // ---------------------------------------------------------------- teclado
 const teclas = new Set()
@@ -22,9 +22,12 @@ const t = (...c) => c.some((k) => teclas.has(k))
 
 export function estadoTeclado() {
   return {
-    acelerar: t('ArrowRight', 'KeyD'),
-    frenar: t('ArrowLeft', 'KeyA', 'ArrowDown', 'KeyS'),
-    saltar: t('ArrowUp', 'KeyW', 'Space'),
+    acelerar: t('ArrowUp', 'KeyW'),
+    frenar: t('ArrowDown', 'KeyS'),
+    izquierda: t('ArrowLeft', 'KeyA'),
+    derecha: t('ArrowRight', 'KeyD'),
+    giro: 0,
+    saltar: t('Space'),
     turbo: t('ShiftLeft', 'ShiftRight', 'KeyL'),
     lanzar: t('KeyZ', 'KeyJ'),
     soltar: t('KeyC', 'KeyK', 'KeyX'),
@@ -50,11 +53,13 @@ export function estadoMando(i) {
   const g = mandoPorIndice(i)
   if (!g) return { ...VACIO }
   const ax = g.axes[0] || 0
-  const ay = g.axes[1] || 0
   return {
-    acelerar: bt(g, 0) || bt(g, 15) || ax > 0.5,
-    frenar: bt(g, 4) || bt(g, 6) || bt(g, 14) || bt(g, 13) || ax < -0.5,
-    saltar: bt(g, 1) || bt(g, 12) || ay < -0.6,
+    acelerar: bt(g, 0) || bt(g, 12),
+    frenar: bt(g, 1) || bt(g, 13),
+    izquierda: bt(g, 14),
+    derecha: bt(g, 15),
+    giro: Math.abs(ax) > 0.15 ? ax : 0,
+    saltar: bt(g, 4) || bt(g, 6),
     turbo: bt(g, 5) || bt(g, 7),
     lanzar: bt(g, 2),
     soltar: bt(g, 3),
@@ -88,7 +93,7 @@ export class Lector {
   }
   actualizar() {
     const e = leer(this.fuente)
-    for (const k in VACIO) this.pulso[k] = e[k] && !this.antes[k]
+    for (const k in VACIO) this.pulso[k] = !!e[k] && !this.antes[k]
     this.antes = e
     this.estado = e
     return this

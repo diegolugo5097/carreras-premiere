@@ -24,7 +24,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .escenario canvas { width: 100%; height: 100%; display: block; }
 .capa { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .fondo-menu {
-  background: linear-gradient(180deg, rgba(20,9,3,.55), rgba(20,9,3,.92)), url(/assets/pistas/Salento/Tramo_05.webp) center 30% / cover;
+  background: linear-gradient(180deg, rgba(20,9,3,.55), rgba(20,9,3,.92)), url(/assets/miniaturas/fondo.webp) center 30% / cover;
 }
 .u { font-size: 1.5cqh; } /* unidad relativa al alto del escenario */
 
@@ -107,8 +107,8 @@ body.modo-control { background: #1b0c04; touch-action: none; overscroll-behavior
 .mando { flex: 1; display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; min-height: 0; }
 .mando .lado { display: grid; gap: 10px; min-height: 0; }
 .mando .izq { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
-.mando .der { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
-.mando .medio { display: flex; flex-direction: column; align-items: center; justify-content: space-between; width: 120px; padding: 4px 0; }
+.mando .der { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.mando .medio { display: flex; flex-direction: column; align-items: center; justify-content: space-between; width: 150px; padding: 2px 0; gap: 4px; }
 .tecla {
   border-radius: 22px; border: 4px solid rgba(255,244,220,.25); background: var(--cafe2);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -122,7 +122,7 @@ body.modo-control { background: #1b0c04; touch-action: none; overscroll-behavior
 .tecla.fren { background: #7a2a1d; }
 .tecla.fren.on { background: #d4523a; }
 .mando .pos { font-size: 40px; font-weight: 900; color: var(--amarillo); line-height: 1; }
-.mando .item { width: 96px; height: 96px; border-radius: 18px; border: 4px solid var(--amarillo); background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
+.mando .item { width: 76px; height: 76px; border-radius: 18px; border: 4px solid var(--amarillo); background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; }
 .mando .item img { width: 86%; }
 .mando .turbo { width: 100%; height: 14px; border-radius: 8px; background: rgba(0,0,0,.5); overflow: hidden; border: 2px solid var(--amarillo); }
 .mando .turbo div { height: 100%; background: var(--naranja); }
@@ -132,3 +132,4 @@ body.modo-control { background: #1b0c04; touch-action: none; overscroll-behavior
   .mando-envoltura .girar { display: flex; position: fixed; inset: 0; background: #1b0c04; z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 20px; font-weight: 800; text-align: center; padding: 30px; }
   .mando-envoltura .girar .ic { font-size: 70px; }
 }
+.escenario canvas.hud { position: absolute; inset: 0; pointer-events: none; }

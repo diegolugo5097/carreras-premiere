@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { COLOR_JUGADOR, PISTAS, VEHICULOS, iconoVehiculo, imgTrampa, miniaturaPista } from '../juego/datos.js'
 import { claveCelular, conectar } from '../red.js'
 
-const BOTONES0 = { acelerar: false, frenar: false, saltar: false, turbo: false, lanzar: false, soltar: false }
+const BOTONES0 = { acelerar: false, frenar: false, izquierda: false, derecha: false, giro: 0, saltar: false, turbo: false, lanzar: false, soltar: false }
 
 function vibrar(p) {
   try {
@@ -226,13 +226,19 @@ export default function Control() {
 function Mando({ socket, propio, color, numero, anfitrion, enviar }) {
   const botones = useRef({ ...BOTONES0 })
   const [vista, setVista] = useState({ ...BOTONES0 })
+  const [autoAcel, setAutoAcel] = useState(() => localStorage.getItem('carreras-auto') !== 'no')
+  const [inclinar, setInclinar] = useState(false)
+  const autoRef = useRef(autoAcel)
+  autoRef.current = autoAcel
 
   const emitir = useCallback(() => {
-    socket?.emit('control', { ...botones.current })
+    const b = { ...botones.current }
+    if (autoRef.current) b.acelerar = !b.frenar
+    socket?.emit('control', b)
   }, [socket])
 
   useEffect(() => {
-    const id = setInterval(emitir, 250)
+    const id = setInterval(emitir, 200)
     const soltarTodo = () => {
       botones.current = { ...BOTONES0 }
       setVista({ ...BOTONES0 })
@@ -245,6 +251,42 @@ function Mando({ socket, propio, color, numero, anfitrion, enviar }) {
       soltarTodo()
     }
   }, [emitir])
+
+  // girar inclinando el celular (como un timón)
+  useEffect(() => {
+    if (!inclinar) {
+      botones.current = { ...botones.current, giro: 0 }
+      return
+    }
+    let ultimo = 0
+    const mover = (e) => {
+      const ang = screen.orientation?.angle ?? window.orientation ?? 90
+      const b = e.beta ?? 0
+      let g = (ang === 270 || ang === -90 ? -b : b) / 28
+      g = Math.max(-1, Math.min(1, g))
+      if (Math.abs(g) < 0.1) g = 0
+      botones.current = { ...botones.current, giro: Math.round(g * 100) / 100 }
+      const ahora = performance.now()
+      if (ahora - ultimo > 60) {
+        ultimo = ahora
+        emitir()
+      }
+    }
+    window.addEventListener('deviceorientation', mover)
+    return () => window.removeEventListener('deviceorientation', mover)
+  }, [inclinar, emitir])
+
+  const alternarInclinar = async () => {
+    if (!inclinar && typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+      try {
+        const r = await DeviceOrientationEvent.requestPermission()
+        if (r !== 'granted') return
+      } catch {
+        return
+      }
+    }
+    setInclinar((v) => !v)
+  }
 
   const poner = (nombre, v) => {
     if (botones.current[nombre] === v) return
@@ -270,25 +312,49 @@ function Mando({ socket, propio, color, numero, anfitrion, enviar }) {
       </div>
       <div className="mando">
         <div className="lado izq">
-          {t('frenar', 'FRENAR', '◀', 'fren')}
-          {t('acelerar', 'ACELERAR', '▶', 'acel')}
+          {inclinar ? (
+            <div className="tecla" style={{ gridColumn: '1 / 3', fontSize: 16 }} onClick={alternarInclinar}>
+              <span className="ic">🎡</span>Inclina el celular para girar
+              <small style={{ opacity: 0.8 }}>(toca para usar botones)</small>
+            </div>
+          ) : (
+            <>
+              {t('izquierda', 'IZQUIERDA', '◀')}
+              {t('derecha', 'DERECHA', '▶')}
+            </>
+          )}
         </div>
         <div className="medio">
           <span className="chip" style={{ background: color, color: '#1b0c04', fontWeight: 900, borderRadius: 10, padding: '2px 12px' }}>
             J{numero}
           </span>
           <div className="pos">{propio.posicion ? `${propio.posicion}º` : '–'}</div>
+          <div style={{ fontWeight: 800, fontSize: 14 }}>Vuelta {propio.vuelta || 1}/3</div>
           <div className="item">{propio.item >= 0 && <img src={imgTrampa(propio.item, true)} alt="" />}</div>
           <div className="turbo">
             <div style={{ width: `${Math.round((propio.turbo ?? 1) * 100)}%` }} />
           </div>
-          <button className="mini" onClick={() => enviar('pausa')}>⏸ Pausa</button>
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button className="mini" onClick={alternarInclinar}>{inclinar ? '🔘 Botones' : '🎡 Inclinar'}</button>
+            <button
+              className="mini"
+              onClick={() => {
+                localStorage.setItem('carreras-auto', autoAcel ? 'no' : 'si')
+                setAutoAcel(!autoAcel)
+              }}
+            >
+              {autoAcel ? '⚡ Auto' : '⚡ Manual'}
+            </button>
+            <button className="mini" onClick={() => enviar('pausa')}>⏸</button>
+          </div>
         </div>
-        <div className="lado der">
+        <div className={'lado der' + (autoAcel ? '' : ' manual')}>
           {t('soltar', 'SOLTAR ATRÁS', '⤺')}
           {t('lanzar', 'LANZAR', '⤻')}
           {t('turbo', 'TURBO', '🔥')}
+          {t('frenar', 'FRENAR', '■', 'fren')}
           {t('saltar', 'SALTAR', '⤒')}
+          {!autoAcel && t('acelerar', 'ACELERAR', '▲', 'acel')}
         </div>
       </div>
       {propio.pausado && (

@@ -1,6 +1,6 @@
 # Carreras (React + Vite + Socket.io)
 
-Juego de carreras de lado con las pistas Salento, Santa Lucía y Guaduales.
+Juego de carreras 3D (cámara detrás del kart) en los circuitos Salento, Santa Lucía y Guaduales.
 
 ## Modos
 
@@ -35,27 +35,30 @@ computador desde `http://localhost:3000`: el QR usa la IP local automáticamente
 
 | Acción | Teclado | Control | Celular |
 |---|---|---|---|
-| Acelerar | → / D | A, cruceta → | ACELERAR |
-| Frenar | ← / A / ↓ | LB, LT, cruceta ← | FRENAR |
-| Saltar | ↑ / W / Espacio | B, cruceta ↑ | SALTAR |
+| Acelerar | ↑ / W | A, cruceta ↑ | automático (o botón, en modo Manual) |
+| Frenar | ↓ / S | B, cruceta ↓ | FRENAR |
+| Girar | ← → / A D | palanca izquierda o cruceta | ◀ ▶ o inclinando el celular |
+| Saltar | Espacio | LB, LT | SALTAR |
 | Turbo | Shift / L | RB, RT | TURBO |
 | Lanzar adelante | Z / J | X | LANZAR |
 | Soltar atrás | C / K / X | Y | SOLTAR ATRÁS |
 | Pausa | Esc / P | Start | ⏸ |
 
-Las cajas flor de café dan un objeto al azar: el costal hace derrapar, el melao frena en seco y la guadua hace
-rebotar. Saltando se esquivan las trampas.
+Carreras de 3 vueltas en circuitos 3D (Three.js). Las cajas flor de café dan un objeto al azar: el costal y
+el melao hacen resbalar, la guadua golpea. Saltando se esquivan las trampas.
 
 ## Estructura
 
 ```
 server/index.js          Express + Socket.io: salas, reenvío de controles, sirve dist/
 src/juego/datos.js       vehículos, pistas, ítems
-src/juego/recursos.js    carga de imágenes/animaciones/pistas y sonido (Web Audio)
+src/juego/recursos.js    imágenes y sonido (Web Audio)
+src/juego/recursos3d.js  carga de circuitos .glb, hojas de sprites de karts y texturas
+src/juego/pista3d.js     línea central del circuito (sacada de la malla "Via")
+src/juego/kart.js        física sobre la vía, animación del sprite (16 fotogramas) e IA
+src/juego/carrera3d.js   reglas, vueltas, cámaras por jugador, pantalla dividida y HUD
 src/juego/entradas.js    teclado, controles, celulares y navegación de menús
-src/juego/corredor.js    física sobre el perfil del suelo, animaciones e IA
-src/juego/carrera.js     reglas de la carrera, cámaras, pantalla dividida y HUD (canvas)
 src/pantalla/*           menús de la pantalla, salas y canvas del juego
 src/control/Control.jsx  control táctil del celular
-public/assets/           sprites (webp), pistas (webp + suelo.json) y sonidos
+public/assets/           karts (hojas 4x4 webp), circuitos (.glb optimizados + línea central .json), sonidos
 ```
